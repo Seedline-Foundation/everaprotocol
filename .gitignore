@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -41,10 +42,9 @@ yarn-error.log*
 next-env.d.ts
 
 # documentation and implementation progress files
-README.md
+CONTRIBUTING.md
 QUICK_START.md
 SESSION_SUMMARY.md
 IMPLEMENTATION_COMPLETE.md
 PHASE_*.md
-/docs/
 /docs/
