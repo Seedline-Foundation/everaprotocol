@@ -1,0 +1,86 @@
+import { Milestone } from '@/types';
+
+export const milestones: Milestone[] = [
+  {
+    id: 'protocol-design',
+    title: 'Protocol Design & Whitepaper',
+    description: 'Completed comprehensive protocol specification and published technical whitepaper',
+    status: 'completed',
+    targetDate: new Date('2025-09-15'),
+    completedDate: new Date('2025-09-12'),
+    progress: 100,
+    category: 'development',
+    evidence: [
+      {
+        type: 'announcement',
+        url: '/whitepaper',
+        label: 'View Whitepaper',
+      },
+    ],
+  },
+  {
+    id: 'testnet-launch',
+    title: 'Testnet Launch',
+    description: 'Deploy initial testnet with core verification and attribution features',
+    status: 'in-progress',
+    targetDate: new Date('2025-12-01'),
+    progress: 65,
+    category: 'development',
+    evidence: [
+      {
+        type: 'github',
+        url: 'https://github.com/evera-protocol/core',
+        label: 'View Code Repository',
+      },
+    ],
+  },
+  {
+    id: 'token-presale',
+    title: 'Token Presale',
+    description: 'Launch token presale for early supporters and community members',
+    status: 'planned',
+    targetDate: new Date('2025-12-15'),
+    category: 'marketing',
+  },
+  {
+    id: 'publisher-partnerships',
+    title: 'Publisher Partnerships (Phase 1)',
+    description: 'Onboard 10+ media publishers for pilot program',
+    status: 'in-progress',
+    targetDate: new Date('2026-01-15'),
+    progress: 30,
+    category: 'partnerships',
+  },
+  {
+    id: 'mainnet-launch',
+    title: 'Mainnet Launch',
+    description: 'Deploy production-ready mainnet with full feature set',
+    status: 'planned',
+    targetDate: new Date('2026-03-01'),
+    category: 'development',
+  },
+  {
+    id: 'mobile-app',
+    title: 'Mobile App Release',
+    description: 'Launch iOS and Android apps for content verification on-the-go',
+    status: 'planned',
+    targetDate: new Date('2026-04-15'),
+    category: 'development',
+  },
+  {
+    id: 'dao-governance',
+    title: 'DAO Governance Launch',
+    description: 'Transition to community-governed DAO with on-chain voting',
+    status: 'planned',
+    targetDate: new Date('2026-06-01'),
+    category: 'development',
+  },
+  {
+    id: 'enterprise-tier',
+    title: 'Enterprise Tier Launch',
+    description: 'Release enterprise features with SLA support and custom integrations',
+    status: 'planned',
+    targetDate: new Date('2026-09-01'),
+    category: 'development',
+  },
+];
