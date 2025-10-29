@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# documentation and implementation progress files
+README.md
+CONTRIBUTING.md
+QUICK_START.md
+SESSION_SUMMARY.md
+IMPLEMENTATION_COMPLETE.md
+PHASE_*.md
+/docs/
+/docs/
