@@ -38,3 +38,6 @@ declare module '*.gif' {
   const content: string;
   export default content;
 }
+
+// Jest DOM types
+import '@testing-library/jest-dom';

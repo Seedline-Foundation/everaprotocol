@@ -8,20 +8,41 @@
 import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/subscribe/route';
 
-// Mock ConvertKit API
+// Mock Resend API
+jest.mock('resend', () => ({
+  Resend: jest.fn().mockImplementation(() => ({
+    contacts: {
+      create: jest.fn(),
+      remove: jest.fn(),
+    },
+    emails: {
+      send: jest.fn(),
+    },
+  })),
+}));
+
+// Also mock fetch for any remaining fetch calls
 global.fetch = jest.fn();
 
 describe('POST /api/subscribe - Contract Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Set up environment variables for tests
+    process.env.RESEND_API_KEY = 'test_api_key';
+    process.env.RESEND_AUDIENCE_ID = 'test_audience_id';
   });
 
   it('should accept valid email subscription with all fields', async () => {
-    // Mock ConvertKit API success response
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      status: 201,
-      json: async () => ({ subscription: { id: 'sub_123', state: 'active' } }),
+    // Mock Resend API success response
+    const mockResend = require('resend').Resend;
+    const mockInstance = new mockResend();
+    mockInstance.contacts.create.mockResolvedValueOnce({
+      data: { id: 'contact_123' },
+      error: null,
+    });
+    mockInstance.emails.send.mockResolvedValueOnce({
+      data: { id: 'email_123' },
+      error: null,
     });
 
     const request = new NextRequest('http://localhost:3000/api/subscribe', {
@@ -80,11 +101,12 @@ describe('POST /api/subscribe - Contract Tests', () => {
   });
 
   it('should return 409 for duplicate email', async () => {
-    // Mock ConvertKit API duplicate error
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: false,
-      status: 409,
-      json: async () => ({ error: 'Subscriber already exists' }),
+    // Mock Resend API duplicate error
+    const mockResend = require('resend').Resend;
+    const mockInstance = new mockResend();
+    mockInstance.contacts.create.mockResolvedValueOnce({
+      data: null,
+      error: { message: 'Contact already exists' },
     });
 
     const request = new NextRequest('http://localhost:3000/api/subscribe', {
@@ -118,11 +140,16 @@ describe('POST /api/subscribe - Contract Tests', () => {
       })
     );
 
-    // Mock ConvertKit success for first 10 requests
-    (global.fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      status: 201,
-      json: async () => ({ subscription: { id: 'sub_123' } }),
+    // Mock Resend success for first 10 requests
+    const mockResend = require('resend').Resend;
+    const mockInstance = new mockResend();
+    mockInstance.contacts.create.mockResolvedValue({
+      data: { id: 'contact_123' },
+      error: null,
+    });
+    mockInstance.emails.send.mockResolvedValue({
+      data: { id: 'email_123' },
+      error: null,
     });
 
     // First 10 should succeed, 11th should be rate limited
@@ -141,8 +168,10 @@ describe('POST /api/subscribe - Contract Tests', () => {
   });
 
   it('should return 500 for server errors', async () => {
-    // Mock ConvertKit API server error
-    (global.fetch as jest.Mock).mockRejectedValueOnce(
+    // Mock Resend API server error
+    const mockResend = require('resend').Resend;
+    const mockInstance = new mockResend();
+    mockInstance.contacts.create.mockRejectedValueOnce(
       new Error('Network error')
     );
 

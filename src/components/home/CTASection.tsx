@@ -146,7 +146,10 @@ export function CTASection({
         {variant === 'email-capture' && (
           <AnimatedSection animation="slide-up" delay={0.2}>
             <div className="max-w-2xl mx-auto">
-              <EmailCaptureForm source={emailCaptureSource} />
+              <EmailCaptureForm 
+                source={emailCaptureSource} 
+                variant={backgroundColor === 'charcoal' ? 'dark' : 'light'}
+              />
             </div>
           </AnimatedSection>
         )}

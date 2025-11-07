@@ -1,7 +1,7 @@
 // T054 - Implement POST /api/subscribe route
 import { NextResponse } from 'next/server';
 import { emailSubscriptionSchema } from '@/lib/validation';
-import { createSubscriber } from '@/lib/convertkit';
+import { createSubscriber } from '@/lib/resend';
 import { Interest } from '@/types';
 
 // In-memory rate limiting (in production, use Redis or Upstash)

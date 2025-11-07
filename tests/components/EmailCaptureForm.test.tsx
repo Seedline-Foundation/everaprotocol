@@ -34,12 +34,13 @@ describe('EmailCaptureForm Component Tests', () => {
     const emailInput = screen.getByLabelText(/email/i);
     const submitButton = screen.getByRole('button', { name: /subscribe/i });
 
-    // Enter invalid email
+    // Enter invalid email and blur to trigger validation
     await user.type(emailInput, 'invalid-email');
+    await user.tab(); // Move focus away to trigger validation
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/valid email/i)).toBeInTheDocument();
+      expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
     });
   });
 
@@ -47,15 +48,18 @@ describe('EmailCaptureForm Component Tests', () => {
     const user = userEvent.setup();
     renderWithProviders(<EmailCaptureForm source="test" />);
 
+    const emailInput = screen.getByLabelText(/email/i);
     const walletInput = screen.getByLabelText(/wallet address/i);
     const submitButton = screen.getByRole('button', { name: /subscribe/i });
 
-    // Enter invalid wallet address
+    // Enter valid email but invalid wallet address
+    await user.type(emailInput, 'test@example.com');
     await user.type(walletInput, 'invalid-wallet');
+    await user.tab(); // Move focus away to trigger validation
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/valid ethereum address/i)).toBeInTheDocument();
+      expect(screen.getByText(/please enter a valid ethereum wallet address/i)).toBeInTheDocument();
     });
   });
 
@@ -86,15 +90,19 @@ describe('EmailCaptureForm Component Tests', () => {
   it('should handle form submission success flow', async () => {
     const user = userEvent.setup();
     
-    // Mock successful API response
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      status: 201,
-      json: async () => ({
-        success: true,
-        subscriberId: 'sub_123',
-      }),
-    });
+    // Mock successful API response with delay to catch loading state
+    (global.fetch as jest.Mock).mockImplementationOnce(() =>
+      new Promise(resolve => 
+        setTimeout(() => resolve({
+          ok: true,
+          status: 201,
+          json: async () => ({
+            success: true,
+            subscriberId: 'sub_123',
+          }),
+        }), 100)
+      )
+    );
 
     renderWithProviders(<EmailCaptureForm source="test" />);
 
@@ -114,8 +122,8 @@ describe('EmailCaptureForm Component Tests', () => {
 
     // Should show success message
     await waitFor(() => {
-      expect(screen.getByText(/success/i)).toBeInTheDocument();
-    });
+      expect(screen.getByText(/successfully subscribed/i)).toBeInTheDocument();
+    }, { timeout: 3000 });
 
     // Verify API was called with correct data
     expect(global.fetch).toHaveBeenCalledWith(
@@ -154,7 +162,7 @@ describe('EmailCaptureForm Component Tests', () => {
 
     // Should show error message
     await waitFor(() => {
-      expect(screen.getByText(/error/i)).toBeInTheDocument();
+      expect(screen.getByText(/subscription failed/i)).toBeInTheDocument();
     });
   });
 

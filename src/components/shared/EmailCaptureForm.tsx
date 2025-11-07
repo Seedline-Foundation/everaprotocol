@@ -28,12 +28,14 @@ export interface EmailCaptureFormProps {
   source: string;
   onSuccess?: () => void;
   className?: string;
+  variant?: 'light' | 'dark';
 }
 
 export function EmailCaptureForm({
   source,
   onSuccess,
   className = '',
+  variant = 'light',
 }: EmailCaptureFormProps): JSX.Element {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -147,11 +149,17 @@ export function EmailCaptureForm({
     { value: Interest.General, label: 'General Interest' },
   ];
 
+  // Color classes based on variant
+  const textColorClass = variant === 'dark' ? 'text-white' : 'text-charcoal';
+  const subTextColorClass = variant === 'dark' ? 'text-stone' : 'text-gray-500';
+  const inputBorderClass = variant === 'dark' ? 'border-white/20 focus:border-gold' : 'border-stone focus:border-gold';
+  const inputBgClass = variant === 'dark' ? 'bg-white/10 text-white placeholder-white/70' : 'bg-white text-charcoal';
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={`space-y-4 ${className}`}>
       {/* Email Input */}
       <div>
-        <label htmlFor="email" className="block text-sm font-semibold text-charcoal mb-2">
+        <label htmlFor="email" className={`block text-sm font-semibold ${textColorClass} mb-2`}>
           Email Address <span className="text-coral">*</span>
         </label>
         <input
@@ -159,8 +167,8 @@ export function EmailCaptureForm({
           type="email"
           id="email"
           placeholder="your.email@example.com"
-          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold transition-all ${
-            errors.email ? 'border-coral' : 'border-stone focus:border-gold'
+          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold transition-all ${inputBgClass} ${
+            errors.email ? 'border-coral' : inputBorderClass
           }`}
           disabled={status === 'submitting'}
         />
@@ -173,16 +181,16 @@ export function EmailCaptureForm({
 
       {/* Wallet Address Input (Optional) */}
       <div>
-        <label htmlFor="walletAddress" className="block text-sm font-semibold text-charcoal mb-2">
-          Ethereum Wallet Address <span className="text-sm text-gray-500">(Optional)</span>
+        <label htmlFor="walletAddress" className={`block text-sm font-semibold ${textColorClass} mb-2`}>
+          Ethereum Wallet Address <span className={`text-sm ${subTextColorClass}`}>(Optional)</span>
         </label>
         <input
           {...register('walletAddress')}
           type="text"
           id="walletAddress"
           placeholder="0x..."
-          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold transition-all ${
-            errors.walletAddress ? 'border-coral' : 'border-stone focus:border-gold'
+          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold transition-all ${inputBgClass} ${
+            errors.walletAddress ? 'border-coral' : inputBorderClass
           }`}
           disabled={status === 'submitting'}
         />
@@ -195,7 +203,7 @@ export function EmailCaptureForm({
 
       {/* Interests Checkboxes */}
       <div>
-        <label className="block text-sm font-semibold text-charcoal mb-2">
+        <label className={`block text-sm font-semibold ${textColorClass} mb-2`}>
           I'm interested as a... <span className="text-coral">*</span>
         </label>
         <div className="space-y-2">
@@ -205,10 +213,14 @@ export function EmailCaptureForm({
                 {...register('interests')}
                 type="checkbox"
                 value={option.value}
-                className="w-5 h-5 text-gold border-stone rounded focus:ring-gold focus:ring-2"
+                className={`w-5 h-5 text-gold rounded focus:ring-gold focus:ring-2 ${
+                  variant === 'dark' 
+                    ? 'border-white/20 bg-white/10' 
+                    : 'border-stone bg-white'
+                }`}
                 disabled={status === 'submitting'}
               />
-              <span className="text-charcoal">{option.label}</span>
+              <span className={textColorClass}>{option.label}</span>
             </label>
           ))}
         </div>
@@ -235,6 +247,15 @@ export function EmailCaptureForm({
         </div>
       )}
 
+      {/* Error Message */}
+      {status === 'error' && (
+        <div className="p-4 bg-red-100 border-2 border-red-500 rounded-lg">
+          <p className="text-red-700 font-semibold">
+            ✗ {errorMessage || 'Subscription failed. Please try again later.'}
+          </p>
+        </div>
+      )}
+
       {/* Submit Button */}
       <Button
         type="submit"
@@ -247,7 +268,7 @@ export function EmailCaptureForm({
         {status === 'submitting' ? 'Subscribing...' : 'Subscribe'}
       </Button>
 
-      <p className="text-xs text-gray-500 text-center">
+      <p className={`text-xs ${subTextColorClass} text-center`}>
         We respect your privacy. Unsubscribe at any time.
       </p>
     </form>

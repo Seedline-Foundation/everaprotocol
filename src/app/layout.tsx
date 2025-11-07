@@ -98,8 +98,8 @@ export default function RootLayout({
         {/* T074 - Performance: Resource hints for external domains */}
         <link rel="preconnect" href="https://plausible.io" />
         <link rel="dns-prefetch" href="https://plausible.io" />
-        <link rel="preconnect" href="https://api.convertkit.com" />
-        <link rel="dns-prefetch" href="https://api.convertkit.com" />
+        <link rel="preconnect" href="https://api.resend.com" />
+        <link rel="dns-prefetch" href="https://api.resend.com" />
         
         {/* Plausible Analytics - Privacy-friendly analytics */}
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (

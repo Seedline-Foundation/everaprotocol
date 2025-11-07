@@ -60,6 +60,7 @@ export function Footer(): JSX.Element {
               <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
                 <EmailCaptureForm
                   source="footer-newsletter"
+                  variant="dark"
                   onSuccess={() => {
                     setTimeout(() => setShowEmailForm(false), 2000);
                   }}
